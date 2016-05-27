@@ -11,6 +11,25 @@
 #include "RegistryFunctions.h"
 #include "AnalogClock.h"
 
+#define CONSOLE_DEBUG
+#ifdef CONSOLE_DEBUG
+#include "std_debug.h"
+#endif
+
+std_debug m_debug;
+
+int init_console_evn()
+{
+	m_debug.init_debug_env();
+	JCG();
+	return 0;
+}
+int release_console_env()
+{
+	JCG();
+	m_debug.release_debug_env();
+	return 0;
+}
 //Clock variables
 POINT CENTRE;
 int RADIUS=68;
@@ -94,6 +113,7 @@ int WINAPI WinMain(HINSTANCE hinst, HINSTANCE hinstPrev,
     g_hInstance = hinst;
 	char sMutexName[]="Ady's Analog Clock";
 
+	init_console_evn();
 	//quit if already a process is running, but highlight the previous instance*/	
 	g_hMutex=CreateMutex(NULL, FALSE,sMutexName); 
 	if (GetLastError()==ERROR_ALREADY_EXISTS)
@@ -139,6 +159,7 @@ AnalogClock::AnalogClock(void)
 
 AnalogClock::~AnalogClock(void)
 {
+	release_console_env();
 }
 HWND AnalogClock ::CreateClock(HINSTANCE hInst)
 { 
